@@ -44,7 +44,112 @@
 
    $(function(){
 
-    //code goes here
+    $("#updateStudentForm :input").prop("disabled", true);
+
+
+let student_id = $("#student_id");
+
+    student_id.selectpicker( {
+   style: 'btn-info',
+   size: 4
+    });
+
+let updateURL;
+
+
+student_id.change(function () {
+        let currentStudent = $(this).val();
+        updateURL = "http://localhost:1337/student/"+currentStudent
+        console.log(currentStudent)
+
+          //store current student in variable for when we submit the form
+          //we need this to know what student we are updating
+          //variable declared on line
+          $.get(updateURL, function(student){
+
+            //loop over the student i got back from the api
+            $.each(student, function(key, val){
+                //find the input field that matches the name of the key
+                let el = $('[name="'+key+'"]');
+                //find the type of field that we selected
+                let type = el.attr('type');
+
+                //based on the type choose how we set the value
+                switch(type){
+                    case 'checkbox':
+                        el.attr('checked', 'checked');
+                        break;
+                    case 'radio':
+                        el.filter('[value="'+val+'"]').attr('checked', 'checked');
+                        break;
+                    default:
+                        el.val(val);
+                }
+            });
+          })
+          //enable input fields after we fill out the form
+          $("#updateStudentForm  :input").prop("disabled", false);
+        })
+
+        //when the submit button on the form is clicked lets prevent the default behavior
+        //we want to stop the form from submitting and reloading the page
+        $("#updateStudentSubmitButton").click(function(e){
+
+          //prevents default behavior of form submitting
+          e.preventDefault()
+
+          //post request that serializes the data from the form and sends it to the API
+
+
+          $.ajax({
+            url: updateURL,
+            type: 'PUT',
+            data: $("#updateStudentForm").serialize(),
+            success: function(result) {
+                alert("Successfully updated")
+            }
+          });
+
+       })
+
+       $("#updateStudentForm").validate({
+         rules: {
+
+             first_name: {
+                 required: true,
+                 minlength: 2
+             },
+             last_name: {
+                 required: true,
+                 minlength: 2
+             },
+             start_date: {
+                 date: true
+             }
+           },
+         messages: {
+
+               first_name: {
+                   required: "Error: First name is a required field and must be filled out.",
+                   minlength: "Error: The first name field must contain more then 2 characters."
+               },
+               last_name: {
+                   required: "Error: Last name is a required field and must be filled out.",
+                   minlength: "Error: The last name field must contain more then 2 characters."
+               },
+               start_date: {
+                   required: "Error: The date field must be filled out in a YYY-MM-DD format."
+               }
+         },
+         highlight: function (element) {
+               $(element).parent().addClass('error')
+           },
+           unhighlight: function (element) {
+               $(element).parent().removeClass('error')
+           }
+       });
+
+
 
    })
 

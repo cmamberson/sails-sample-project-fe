@@ -28,7 +28,44 @@
 
   $(function(){
 
-  	//code goes here
+    $("#addStudentForm").validate({
+
+      rules: {
+
+          first_name: {
+              required: true,
+              minlength: 2
+          },
+          last_name: {
+              required: true,
+              minlength: 2
+          },
+          start_date: {
+              date: true
+          }
+        },
+      messages: {
+
+            first_name: {
+                required: "Error: First name is a required field and must be filled out.",
+                minlength: "Error: The first name field must contain more then 2 characters."
+            },
+            last_name: {
+                required: "Error: Last name is a required field and must be filled out.",
+                minlength: "Error: The last name field must contain more then 2 characters."
+            },
+            start_date: {
+                required: "Error: The date field must be filled out in a YYY-MM-DD format."
+            }
+      },
+
+      highlight: function (element) {
+            $(element).parent().addClass('error')
+        },
+        unhighlight: function (element) {
+            $(element).parent().removeClass('error')
+        }
+});
 
   })
 

@@ -13,3 +13,9 @@ body {
         max-width: 1024px;
     }
 }
+#addStudentForm .error {
+color: #FF0000;
+}
+#updateStudentForm .error {
+color: #FF0000;
+}
